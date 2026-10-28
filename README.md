@@ -74,7 +74,7 @@ sudo usermod -aG dialout $USER
 Build and upload:
 
 ```bash
-git clone https://github.com/<username>/esp32doom.git
+git clone https://github.com/FredJones35/esp32doom.git
 cd esp32doom
 pio run -t upload        # or ./flash-game.sh
 pio device monitor       # FPS output
