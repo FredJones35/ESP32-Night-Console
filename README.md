@@ -1,35 +1,35 @@
 # ESP32 DOOM
 
-ESP32 DevKit V1 ve 1.44" 128x128 renkli TFT ekran üzerinde çalışan, sıfırdan yazılmış **Doom tarzı bir raycaster** oyunu. Oyun 5 butonla oynanıyor, harici kütüphane olarak yalnızca [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) kullanılıyor.
+A **Doom-style raycaster** game written from scratch, running on an ESP32 DevKit V1 and a 1.44" 128x128 color TFT display. The game is played with 5 buttons, and the only external library used is [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI).
 
-> Bu proje id Software'in Doom'unun bir portu değil. Bütün grafikler (dokular, düşman, silah) kodun içinde prosedürel olarak üretiliyor, hiçbir WAD dosyası veya orijinal oyun verisi kullanılmıyor.
+> This project is not a port of id Software's Doom. All graphics (textures, enemy, weapon) are generated procedurally in code; no WAD file or original game data is used.
 
-## Özellikler
+## Features
 
-- Wolfenstein/Doom tarzı raycasting motoru, ~80 FPS (240 MHz)
-- 3 farklı prosedürel duvar dokusu (tuğla, metal panel, taş) ve uzaklığa göre gölgelendirme
-- Z-buffer ile duvar arkasında gizlenen sprite düşmanlar
-- Oyuncuyu görünce takip edip yakın dövüşte saldıran 8 düşman
-- Yürürken sallanan silah, namlu alevi ve hasar yiyince kırmızı kenarlık
-- HUD: can, mermi, öldürme sayısı
-- Başlık, ölüm ve bölüm sonu ekranları
+- Wolfenstein/Doom-style raycasting engine, ~80 FPS (240 MHz)
+- 3 different procedural wall textures (brick, metal panel, stone) with distance-based shading
+- Sprite enemies hidden behind walls via a Z-buffer
+- 8 enemies that chase the player on sight and attack in melee
+- Weapon bob while walking, muzzle flash, and a red border when taking damage
+- HUD: health, ammo, kill count
+- Title, death, and level-complete screens
 
-## Donanım
+## Hardware
 
-| Parça | Adet |
+| Part | Qty |
 |---|---|
 | ESP32 DevKit V1 (ESP32-WROOM-32) | 1 |
-| 1.44" 128x128 SPI TFT ekran (ST7735) | 1 |
-| Tactile buton | 5 |
-| Breadboard ve jumper kablolar | — |
+| 1.44" 128x128 SPI TFT display (ST7735) | 1 |
+| Tactile button | 5 |
+| Breadboard and jumper wires | — |
 
-## Bağlantı Şeması
+## Wiring Diagram
 
-![Bağlantı şeması](docs/wiring.svg)
+![Wiring diagram](docs/wiring.svg)
 
-### Ekran
+### Display
 
-| Ekran pini | ESP32 |
+| Display pin | ESP32 |
 |---|---|
 | SDA (MOSI) | D13 |
 | SCK / SCL | D14 |
@@ -40,25 +40,25 @@ ESP32 DevKit V1 ve 1.44" 128x128 renkli TFT ekran üzerinde çalışan, sıfırd
 | LED / BL | 3V3 |
 | GND | GND |
 
-> Ekranın üzerinde SDA/SCL yazıyor ama bu bir **SPI** ekranı. I2C pinlerine (D21/D22) **bağlanmamalı**.
+> The display is labeled SDA/SCL, but it is an **SPI** display. It must **not** be connected to the I2C pins (D21/D22).
 
-### Butonlar
+### Buttons
 
-Her butonun bir ucu ESP32 pinine, diğer ucu GND'ye bağlanıyor. Kodda dahili pull-up kullanıldığı için harici direnç gerekmiyor.
+One side of each button connects to an ESP32 pin, the other side to GND. The code uses the internal pull-ups, so no external resistors are needed.
 
-| Buton | ESP32 |
+| Button | ESP32 |
 |---|---|
-| Ateş et | D19 |
-| İleri git | D4 |
-| Sola bak | D32 |
-| Sağa bak | D25 |
-| Geri git | D33 |
+| Fire | D19 |
+| Move forward | D4 |
+| Turn left | D32 |
+| Turn right | D25 |
+| Move backward | D33 |
 
-> **Not:** 4 bacaklı butonlarda bacaklar ikişer ikişer içeriden birbirine bağlı. Kabloları **çapraz** bacaklara takın, yoksa buton sürekli basılı okunur.
+> **Note:** On 4-leg buttons, the legs are connected internally in pairs. Wire to **diagonally opposite** legs, otherwise the button will read as permanently pressed.
 
-## Kurulum
+## Setup
 
-[PlatformIO](https://platformio.org/) gerekiyor. Debian/Ubuntu için:
+[PlatformIO](https://platformio.org/) is required. On Debian/Ubuntu:
 
 ```bash
 # PlatformIO
@@ -67,58 +67,58 @@ curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/pla
 python3 get-platformio.py
 echo 'export PATH="$PATH:$HOME/.platformio/penv/bin"' >> ~/.bashrc && source ~/.bashrc
 
-# Seri port izni (sonra oturumu kapatıp açın)
+# Serial port permission (log out and back in afterwards)
 sudo usermod -aG dialout $USER
 ```
 
-Derleme ve yükleme:
+Build and upload:
 
 ```bash
-git clone https://github.com/<kullanici-adi>/esp32doom.git
+git clone https://github.com/<username>/esp32doom.git
 cd esp32doom
-pio run -t upload        # ya da ./flash-game.sh
-pio device monitor       # FPS çıktısı
+pio run -t upload        # or ./flash-game.sh
+pio device monitor       # FPS output
 ```
 
-TFT_eSPI'nin bütün ayarları `platformio.ini` içindeki `build_flags` ile veriliyor. Bu yüzden kütüphanenin `User_Setup.h` dosyasını düzenlemeye gerek yok.
+All TFT_eSPI settings are provided through `build_flags` in `platformio.ini`, so there is no need to edit the library's `User_Setup.h`.
 
-## Kontroller
+## Controls
 
-| Buton | Görev |
+| Button | Action |
 |---|---|
-| Ateş et | Ateş et (basılı tutunca otomatik ateş) / oyunu başlat / yeniden başla |
-| İleri / Geri | Yürü |
-| Sola / Sağa bak | Dön |
+| Fire | Shoot (hold for auto-fire) / start the game / restart |
+| Forward / Backward | Walk |
+| Turn left / right | Rotate |
 
-Bütün düşmanları öldürdüğünüzde bölüm tamamlanıyor. Öldürülen her düşman +4 mermi veriyor.
+The level is complete when you kill all the enemies. Each enemy killed gives +4 ammo.
 
-## Sorun Giderme
+## Troubleshooting
 
-| Belirti | Çözüm |
+| Symptom | Fix |
 |---|---|
-| Ekran tamamen beyaz | Kablolama hatalı. SDA→D13, SCK→D14 bağlantılarını kontrol edin. Seri monitörde `FPS:` görünüyorsa kod çalışıyor demektir. |
-| Görüntü 32 piksel kaymış ya da üstte karlı şerit var | `platformio.ini` içindeki sürücü ayarını değiştirin: `ST7735_GREENTAB3` → `GREENTAB128` / `GREENTAB2` / `BLACKTAB` |
-| Kenarda 1–2 piksellik renkli çizgi var | `ST7735_GREENTAB2` veya `ST7735_BLACKTAB` deneyin |
-| Kırmızı ile mavi yer değiştirmiş | `-D TFT_RGB_ORDER=TFT_BGR` satırını açın |
-| Görüntü bozuk ya da karlı | `SPI_FREQUENCY` değerini `20000000` veya `10000000` yapın |
-| Ateş butonu basılmadan sürekli ateş ediyor | Buton bacakları yanlış, kabloları çapraz bacaklara takın. `TFT_MISO=-1` ayarının da yerinde olduğundan emin olun (D19 normalde VSPI MISO pini). |
-| Yükleme `Unable to verify flash chip connection` hatası veriyor | D12'ye ya da CMD/SD0–SD3/CLK pinlerine kablo bağlanmış olabilir. Bu pinler boş kalmalı. |
+| Screen is completely white | Wiring error. Check the SDA→D13 and SCK→D14 connections. If `FPS:` shows up in the serial monitor, the code is running. |
+| Image is shifted by 32 pixels or has a snowy strip at the top | Change the driver setting in `platformio.ini`: `ST7735_GREENTAB3` → `GREENTAB128` / `GREENTAB2` / `BLACKTAB` |
+| 1–2 pixel colored line at the edge | Try `ST7735_GREENTAB2` or `ST7735_BLACKTAB` |
+| Red and blue are swapped | Enable the `-D TFT_RGB_ORDER=TFT_BGR` line |
+| Image is garbled or snowy | Set `SPI_FREQUENCY` to `20000000` or `10000000` |
+| Fire button fires continuously without being pressed | Button legs are wired wrong; use diagonally opposite legs. Also make sure the `TFT_MISO=-1` setting is in place (D19 is normally the VSPI MISO pin). |
+| Upload fails with `Unable to verify flash chip connection` | A wire may be connected to D12 or to the CMD/SD0–SD3/CLK pins. These pins must be left unconnected. |
 
-## Proje Yapısı
+## Project Structure
 
 ```
 esp32doom/
-├── platformio.ini     # kart, kütüphane ve ekran ayarları
-├── flash-game.sh      # derle + yükle kısayolu
+├── platformio.ini     # board, library and display settings
+├── flash-game.sh      # build + upload shortcut
 ├── src/
-│   └── main.cpp       # oyun: raycaster, düşmanlar, HUD, girişler
+│   └── main.cpp       # game: raycaster, enemies, HUD, input
 └── docs/
-    └── wiring.svg     # bağlantı şeması
+    └── wiring.svg     # wiring diagram
 ```
 
-## Nasıl Çalışıyor?
+## How It Works
 
-- **Render:** Ekranın her sütunu için oyuncunun bakış yönünde bir ışın gönderiliyor. Işın DDA algoritmasıyla 16x16'lık harita ızgarasında ilerliyor. Duvara çarptığı mesafeye göre sütun yüksekliği ve doku koordinatı hesaplanıyor.
-- **Framebuffer:** 128x128 RGB565 görüntü (32 KB) RAM'de bir `TFT_eSprite` içinde çiziliyor ve her karede tek seferde SPI ile ekrana gönderiliyor.
-- **Sprite'lar:** Düşmanlar kamera uzayına dönüştürülüyor, uzaktan yakına sıralanıyor ve sütun bazında z-buffer'a göre kırpılarak çiziliyor.
-- **Dokular:** Açılışta hash tabanlı gürültüyle 32x32 boyutunda üretiliyor, flash'ta resim dosyası tutulmuyor.
+- **Rendering:** For each screen column, a ray is cast in the player's viewing direction. The ray advances through the 16x16 map grid using the DDA algorithm. The column height and texture coordinate are computed from the distance at which it hits a wall.
+- **Framebuffer:** The 128x128 RGB565 image (32 KB) is drawn into a `TFT_eSprite` in RAM and sent to the display over SPI in a single transfer each frame.
+- **Sprites:** Enemies are transformed into camera space, sorted far to near, and drawn column by column, clipped against the Z-buffer.
+- **Textures:** Generated at startup as 32x32 images using hash-based noise; no image files are stored in flash.
