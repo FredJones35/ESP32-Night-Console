@@ -1,3 +1,5 @@
 .pio/
 .vscode/
 get-platformio.py
+tools/sim/sim
+tools/sim/out/
