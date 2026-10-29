@@ -757,7 +757,7 @@ static void renderSelect() {
     save::keyFor(key, "rcl", w->tracks.title[w->list.sel]);
     int32_t bl = save::get(key, -1);
     if (bl >= 0) { ui::formatTime(tb, sizeof(tb), (uint32_t)bl); gfx::textf(SCR_W / 2, 110, rgb(150, 200, 255), 1, AL_CENTER, "En iyi tur %s", tb); }
-    else gfx::text(SCR_W / 2, 110, "Ilk 3 = sonraki pist", rgb(150, 160, 200), 1, AL_CENTER);
+    else gfx::text(SCR_W / 2, 110, "Ilk 3: yeni pist", rgb(150, 160, 200), 1, AL_CENTER);
   }
   gfx::textf(SCR_W / 2, 120, rgb(100, 110, 140), 1, AL_CENTER, sd::ok() ? "SD: %d ek pist" : "SD yok: %d pist",
              sd::ok() ? w->tracks.count - w->tracks.builtinCount : w->tracks.count);
@@ -832,7 +832,7 @@ static void scoreText(char* buf, int n) {
   int total = BUILTIN_COUNT + sd::count("/race", ".trk");
   int u = save::get("rc_unl", 1);
   if (u > total) u = total;
-  snprintf(buf, n, "Pist %d/%d  Kupa %d", u, total, (int)save::get("rc_win", 0));
+  snprintf(buf, n, "Pist %d/%d Kupa %d", u, total, (int)save::get("rc_win", 0));
 }
 
 static const char* const CONTROLS[] = {
