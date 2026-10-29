@@ -29,7 +29,7 @@ static const float WOFF[2][2] = { { -0.62f, -0.36f }, { 0.62f, -0.36f } };   // 
 enum ObjType : uint8_t { O_CHECKPOINT, O_FLAG, O_TREE, O_CACTUS, O_ROCK, O_SIGN, O_TIRE, O_COUNT };
 static const char* const OBJ_NAMES[O_COUNT] = { "checkpoint", "flag", "tree", "cactus", "rock", "sign", "tire" };
 enum ThemeId : uint8_t { TH_FOREST, TH_DESERT, TH_NIGHT, TH_SNOW };
-enum Mode : uint8_t { M_SELECT, M_COUNT, M_RIDE, M_CRASH, M_PAUSE, M_FINISH };
+enum Mode : uint8_t { M_SELECT, M_COUNT, M_RIDE, M_CRASH, M_FINISH };
 
 struct Pt { float x, y; };
 struct Obj { float x; uint8_t type; bool passed; };
@@ -332,9 +332,6 @@ static void update(float dt) {
     case M_COUNT:
       if (w->modeT >= 2.0f) { w->mode = M_RIDE; w->modeT = 0; }
       break;
-    case M_PAUSE:
-      if (input::pressed(B_RELOAD) || input::pressed(B_FIRE)) { w->mode = M_RIDE; input::clear(); }
-      return;
     case M_FINISH:
       if (w->modeT > 1.0f && input::pressed(B_FIRE)) { w->mode = M_SELECT; input::clear(); return; }
       break;
@@ -658,8 +655,6 @@ static void render() {
   renderRide();
   if (w->mode == M_COUNT) {
     gfx::textShadow(SCR_W / 2, 30, w->modeT < 1.0f ? w->name : "HAZIR", C_WHITE, 1, AL_CENTER);
-  } else if (w->mode == M_PAUSE) {
-    ui::banner("DURDU", "RELOAD: devam", C_WHITE);
   } else if (w->mode == M_FINISH) {
     ui::panel(10, 12, SCR_W - 20, 104, rgb(220, 140, 40), rgb(25, 12, 0));
     gfx::textShadow(SCR_W / 2, 18, "BITIS!", C_WHITE, 1, AL_CENTER);
