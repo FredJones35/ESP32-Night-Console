@@ -140,6 +140,7 @@ void frame() {
       break;
   }
 
+  gfx::setClipBottom(SCR_H);   // bir oyun kırpmayı açık bıraktıysa
   drawOverlays();
   displayPush();
 

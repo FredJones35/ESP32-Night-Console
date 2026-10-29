@@ -1,0 +1,23 @@
+# ESP32 Gece Konsolu - Yaris pisti (format: docs/LEVEL_FORMAT.md)
+# Son pist: dar ve sert virajlar, en hizli rakipler
+name=Seytan Virajlari
+laps=4
+sky=dusk
+theme=grass
+skill=1.12
+deco=tree,pine,rock
+density=0.6
+[road]
+25 0 0
+30 7 800
+30 -7 0
+30 0 -1600
+30 6 800
+20 -6 0
+40 0 1400
+30 -8 0
+30 8 -1400
+40 0 0
+25 -6 500
+25 6 -500
+40 0 0

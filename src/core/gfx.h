@@ -62,9 +62,13 @@ enum Align : uint8_t { AL_LEFT, AL_CENTER, AL_RIGHT };
 
 namespace gfx {
 
+// Alt kırpma sınırı: bu satır ve altı çizilmez (yarışta tepe arkası sprite'lar için)
+extern int clipBottom;
+static inline void setClipBottom(int y) { clipBottom = y < 0 ? 0 : (y > SCR_H ? SCR_H : y); }
+
 void clear(uint16_t c);
 static inline void pixel(int x, int y, uint16_t c) {
-  if ((unsigned)x < (unsigned)SCR_W && (unsigned)y < (unsigned)SCR_H) fb[y * SCR_W + x] = sw16(c);
+  if ((unsigned)x < (unsigned)SCR_W && (unsigned)y < (unsigned)clipBottom) fb[y * SCR_W + x] = sw16(c);
 }
 static inline uint16_t getPixel(int x, int y) {
   if ((unsigned)x < (unsigned)SCR_W && (unsigned)y < (unsigned)SCR_H) return sw16(fb[y * SCR_W + x]);

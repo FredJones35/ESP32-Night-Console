@@ -117,7 +117,8 @@ int main(int argc, char** argv) {
   if (getenv("SIM_SD")) sdRoot = getenv("SIM_SD");
   if (const char* pre = getenv("SIM_SAVE")) {   // "anahtar=deger,anahtar=deger" ile kayıt ön yükleme
     char* s = strdup(pre);
-    for (char* kv = strtok(s, ","); kv; kv = strtok(nullptr, ",")) {
+    char* sp = nullptr;
+    for (char* kv = strtok_r(s, ",", &sp); kv; kv = strtok_r(nullptr, ",", &sp)) {
       char* eq = strchr(kv, '=');
       if (eq) { *eq = 0; store[kv] = atoi(eq + 1); }
     }
@@ -128,7 +129,8 @@ int main(int argc, char** argv) {
   int total = 0;
   for (int a = 1; a < argc; a++) {
     char* script = strdup(argv[a]);
-    for (char* tok = strtok(script, " \n"); tok; tok = strtok(nullptr, " \n")) {
+    char* sp = nullptr;
+    for (char* tok = strtok_r(script, " \n", &sp); tok; tok = strtok_r(nullptr, " \n", &sp)) {
       if (!strncmp(tok, "shot:", 5)) { shot(tok + 5); continue; }
       char* star = strchr(tok, '*');
       int n = star ? atoi(star + 1) : 1;

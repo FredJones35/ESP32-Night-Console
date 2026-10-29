@@ -7,6 +7,8 @@
 
 namespace gfx {
 
+int clipBottom = SCR_H;
+
 void clear(uint16_t c) {
   uint16_t s = sw16(c);
   uint32_t v = ((uint32_t)s << 16) | s;
@@ -15,7 +17,7 @@ void clear(uint16_t c) {
 }
 
 void hline(int x, int y, int w, uint16_t c) {
-  if ((unsigned)y >= (unsigned)SCR_H) return;
+  if ((unsigned)y >= (unsigned)clipBottom) return;
   if (x < 0) { w += x; x = 0; }
   if (x + w > SCR_W) w = SCR_W - x;
   if (w <= 0) return;
@@ -27,7 +29,7 @@ void hline(int x, int y, int w, uint16_t c) {
 void vline(int x, int y, int h, uint16_t c) {
   if ((unsigned)x >= (unsigned)SCR_W) return;
   if (y < 0) { h += y; y = 0; }
-  if (y + h > SCR_H) h = SCR_H - y;
+  if (y + h > clipBottom) h = clipBottom - y;
   if (h <= 0) return;
   uint16_t s = sw16(c);
   uint16_t* p = fb + y * SCR_W + x;
@@ -38,7 +40,7 @@ void fillRect(int x, int y, int w, int h, uint16_t c) {
   if (x < 0) { w += x; x = 0; }
   if (y < 0) { h += y; y = 0; }
   if (x + w > SCR_W) w = SCR_W - x;
-  if (y + h > SCR_H) h = SCR_H - y;
+  if (y + h > clipBottom) h = clipBottom - y;
   if (w <= 0 || h <= 0) return;
   uint16_t s = sw16(c);
   for (int j = 0; j < h; j++) {
@@ -118,7 +120,7 @@ void fillTriangle(int x0, int y0, int x1, int y1, int x2, int y2, uint16_t c) {
     hline(a, y0, b - a + 1, c);
     return;
   }
-  int ys = y0 < 0 ? 0 : y0, ye = y2 >= SCR_H ? SCR_H - 1 : y2;
+  int ys = y0 < 0 ? 0 : y0, ye = y2 >= clipBottom ? clipBottom - 1 : y2;
   for (int y = ys; y <= ye; y++) {
     int xa = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
     int xb;

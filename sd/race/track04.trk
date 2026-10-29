@@ -1,0 +1,24 @@
+# ESP32 Gece Konsolu - Yaris pisti (format: docs/LEVEL_FORMAT.md)
+name=Gece Sehri
+laps=3
+sky=night
+theme=city
+skill=1.05
+deco=house,billboard,post
+density=0.5
+[road]
+40 0 0
+30 3 0
+40 0 0
+30 -3 0
+20 0 400
+20 0 -400
+40 5 0
+40 0 0
+40 -5 0
+30 0 600
+30 2 -600
+60 0 0
+40 -4 0
+40 4 0
+30 0 0

@@ -1,0 +1,29 @@
+# ESP32 Gece Konsolu - Yaris pisti (format: docs/LEVEL_FORMAT.md)
+name=Karli Gecit
+laps=3
+sky=day
+theme=snow
+skill=1.0
+deco=pine,rock,pine
+density=0.55
+[road]
+# uzunluk viraj yokus
+30 0 0
+40 0 1500
+30 -4 0
+30 4 0
+40 0 -800
+50 -2 600
+30 6 0
+30 0 -1300
+40 -3 0
+30 0 900
+40 5 0
+50 0 -900
+40 -5 0
+30 0 0
+[objects]
+# segment yan tur
+50 -2.4 house
+180 2.2 house
+300 -2.0 billboard
