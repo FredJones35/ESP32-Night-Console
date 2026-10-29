@@ -30,7 +30,27 @@ static double frameCpuMs = 0, maxCpuMs = 0;
 
 void hwInit() {}
 void hwInitButtons() {}
-uint8_t hwButtons() { return simButtons; }
+namespace moto { bool debugState(float* x, float* a, float* slopeAhead, float* slopeHere, bool* air); }
+
+// SIM_BOT=moto: motokrosta açıyı araziye uyduran basit test sürücüsü (madalya ayarı için)
+static uint8_t motoBot() {
+  float x, a, sa, sh;
+  bool air;
+  if (!moto::debugState(&x, &a, &sa, &sh, &air)) return simButtons;
+  uint8_t b = 1 << 1;   // gaz
+  float target = air ? sa : sh;
+  float err = a - target;
+  float tol = air ? 0.12f : 0.3f;
+  if (err > tol) { b |= 1 << 3; if (!air && err > 0.5f) b &= (uint8_t)~(1 << 1); }   // burun yukarı: öne yaslan
+  else if (err < -tol) b |= 1 << 2;
+  return b;
+}
+
+uint8_t hwButtons() {
+  static const char* bot = getenv("SIM_BOT");
+  if (bot && !strcmp(bot, "moto") && simButtons == 0) return motoBot();
+  return simButtons;
+}
 uint32_t hwMs() { return (uint32_t)(simUs / 1000); }
 uint32_t hwUs() { return (uint32_t)simUs; }
 uint32_t hwRandom() { return (uint32_t)rand() * 2654435761u ^ (uint32_t)rand(); }

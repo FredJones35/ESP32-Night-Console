@@ -1,0 +1,41 @@
+# ESP32 Gece Konsolu - Motokros parkuru (format: docs/LEVEL_FORMAT.md)
+name=Gece Kosusu
+theme=night
+gold=36
+silver=43
+bronze=54
+[terrain]
+# komut parametreler (metre)
+flat 20
+bumps 24 1 4
+ramp 10 3
+flat 20
+hill 26 5
+flat 12
+gap 4 3
+flat 16
+up 18 5
+flat 6
+down 22 7
+flat 10
+bumps 36 1.2 6
+flat 10
+ramp 12 4
+flat 26
+valley 26 4
+flat 10
+hill 30 6
+flat 16
+ramp 10 3
+flat 14
+gap 4 3
+flat 20
+[objects]
+# x tur
+60 sign
+100 checkpoint
+150 tree
+200 checkpoint
+260 tree
+300 checkpoint
+360 checkpoint

@@ -1,0 +1,33 @@
+# ESP32 Gece Konsolu - Motokros parkuru (format: docs/LEVEL_FORMAT.md)
+# Buyuk rampalar: havada SOLA basili tut, takla at, sure kazan (-1 sn)
+name=Dev Rampalar
+theme=forest
+gold=30
+silver=36
+bronze=45
+[terrain]
+flat 24
+ramp 16 6
+flat 30
+down 10 2
+flat 10
+ramp 18 7
+flat 34
+hill 24 3
+flat 12
+ramp 20 8
+flat 36
+bumps 24 1 4
+flat 10
+ramp 18 7
+flat 30
+valley 20 3
+flat 20
+[objects]
+40 sign
+90 checkpoint
+150 tree
+175 checkpoint
+240 checkpoint
+300 tree
+320 checkpoint
