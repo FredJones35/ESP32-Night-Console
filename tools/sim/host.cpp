@@ -115,6 +115,14 @@ static void runFrames(int n) {
 int main(int argc, char** argv) {
   srand(1234);
   if (getenv("SIM_SD")) sdRoot = getenv("SIM_SD");
+  if (const char* pre = getenv("SIM_SAVE")) {   // "anahtar=deger,anahtar=deger" ile kayıt ön yükleme
+    char* s = strdup(pre);
+    for (char* kv = strtok(s, ","); kv; kv = strtok(nullptr, ",")) {
+      char* eq = strchr(kv, '=');
+      if (eq) { *eq = 0; store[kv] = atoi(eq + 1); }
+    }
+    free(s);
+  }
   mkdir("tools/sim/out", 0755);
   app::init();
   int total = 0;

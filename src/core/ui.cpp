@@ -48,7 +48,7 @@ void controlsScreen(const Game* g, float t) {
   int y = 28;
   for (const char* const* c = g->controls; c && c[0] && c[1] && y < 100; c += 2, y += 10) {
     gfx::text(3, y, c[0], rgb(255, 200, 60));
-    gfx::text(46, y, c[1], C_WHITE);
+    gfx::text(50, y, c[1], C_WHITE);
   }
   gfx::hline(4, 103, SCR_W - 8, rgb(80, 0, 0));
   gfx::text(SCR_W / 2, 107, "SOL+SAG 1.5sn: Menu", C_GREY, 1, AL_CENTER);

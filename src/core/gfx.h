@@ -6,8 +6,8 @@
 #include "display.h"
 
 static inline uint16_t sw16(uint16_t c) { return (uint16_t)((c >> 8) | (c << 8)); }
-static inline uint8_t  clamp8(int v) { return v < 0 ? 0 : (v > 255 ? 255 : (uint8_t)v); }
-static inline uint16_t rgb(int r, int g, int b) {
+static constexpr uint8_t clamp8(int v) { return v < 0 ? 0 : (v > 255 ? 255 : (uint8_t)v); }
+static constexpr uint16_t rgb(int r, int g, int b) {
   return (uint16_t)(((clamp8(r) & 0xF8) << 8) | ((clamp8(g) & 0xFC) << 3) | (clamp8(b) >> 3));
 }
 static inline int red8(uint16_t c)   { return ((c >> 11) & 31) << 3; }
