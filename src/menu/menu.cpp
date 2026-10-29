@@ -108,23 +108,26 @@ static void drawRow(int i, int x, int y, int w, int h, bool sel, float tt) {
   else GAMES[i]->icon(x + 4, y + 4, sel ? tt : 0);
   const char* name = settings ? "AYARLAR" : GAMES[i]->name;
   uint16_t nc = sel ? C_WHITE : rgb(170, 160, 160);
-  gfx::text(x + 33, y + 6, name, nc);
-  if (sel) gfx::text(x + 34, y + 6, name, nc);   // kalın görünüm
+  gfx::text(x + 31, y + 6, name, nc);
+  if (sel) gfx::text(x + 32, y + 6, name, nc);   // kalın görünüm
   const char* sub = settings ? (sd::ok() ? "SD takili" : "SD yok") : scores[i];
-  gfx::text(x + 33, y + 17, sub, sel ? rgb(255, 170, 60) : rgb(110, 90, 80));
+  gfx::text(x + 31, y + 17, sub, sel ? rgb(255, 170, 60) : rgb(110, 90, 80));
 }
 
 // ---------- Ayarlar ----------
-static const int SET_COUNT = 5;
+static const int SET_COUNT = 7;
+static const int SET_ROW_H = 13;
 
 static void drawSetRow(int i, int x, int y, int w, int h, bool sel, float tt) {
   (void)tt;
   char b[28];
   switch (i) {
     case 0: snprintf(b, sizeof(b), "SD kart: %s", sd::ok() ? "TAKILI" : "YOK"); break;
-    case 1: snprintf(b, sizeof(b), "D:%d  Y:%d  M:%d", sdCounts[0], sdCounts[1], sdCounts[2]); break;
-    case 2: snprintf(b, sizeof(b), "FPS gostergesi: %s", app::showFps() ? "ACIK" : "KAPALI"); break;
-    case 3: snprintf(b, sizeof(b), "Kayitlari sifirla"); break;
+    case 1: snprintf(b, sizeof(b), "Doom SD bolum: %d", sdCounts[0]); break;
+    case 2: snprintf(b, sizeof(b), "Yaris SD pist: %d", sdCounts[1]); break;
+    case 3: snprintf(b, sizeof(b), "Moto SD parkur: %d", sdCounts[2]); break;
+    case 4: snprintf(b, sizeof(b), "FPS goster: %s", app::showFps() ? "ACIK" : "KAPALI"); break;
+    case 5: snprintf(b, sizeof(b), "Kayitlari sifirla"); break;
     default: snprintf(b, sizeof(b), "Geri"); break;
   }
   if (sel) gfx::fillRect(x, y, w - 4, h - 1, rgb(60, 6, 6));
@@ -132,11 +135,11 @@ static void drawSetRow(int i, int x, int y, int w, int h, bool sel, float tt) {
 }
 
 static int updateSettings(float dt) {
-  int r = setList.update(SET_COUNT, dt, 5);
-  if (r == -2 || r == 4) { screen = LIST; input::clear(); }
-  else if (r == 0) rescanSd();
-  else if (r == 2) app::setShowFps(!app::showFps());
-  else if (r == 3) { screen = RESET_CONFIRM; input::clear(); }
+  int r = setList.update(SET_COUNT, dt, SET_COUNT);
+  if (r == -2 || r == 6) { screen = LIST; input::clear(); }
+  else if (r >= 0 && r <= 3) rescanSd();   // SD satırları: kartı yeniden tara
+  else if (r == 4) app::setShowFps(!app::showFps());
+  else if (r == 5) { screen = RESET_CONFIRM; input::clear(); }
   return -1;
 }
 
@@ -145,10 +148,10 @@ static void renderSettings() {
   gfx::fillRect(0, 0, SCR_W, 14, C_BLACK);
   gfx::textShadow(SCR_W / 2, 3, "AYARLAR", rgb(255, 60, 40), 1, AL_CENTER);
   gfx::hline(0, 13, SCR_W, rgb(120, 0, 0));
-  ui::listDraw(setList, SET_COUNT, 2, 18, SCR_W - 2, 16, 5, drawSetRow, t);
-  gfx::text(4, 102, "SD bolum sayilari:", C_GREY);
-  gfx::text(4, 111, "Doom, Yaris, Motokros", C_GREY);
-  gfx::text(4, 120, "ATES: sec  RELOAD: geri", rgb(90, 70, 70));
+  ui::listDraw(setList, SET_COUNT, 2, 17, SCR_W - 2, SET_ROW_H, SET_COUNT, drawSetRow, t);
+  gfx::fillRect(0, 110, SCR_W, SCR_H - 110, C_BLACK);
+  gfx::hline(0, 110, SCR_W, rgb(120, 0, 0));
+  gfx::text(SCR_W / 2, 116, "ATES:sec RELOAD:geri", rgb(110, 80, 80), 1, AL_CENTER);
 }
 
 int update(float dt) {
