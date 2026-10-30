@@ -13,7 +13,7 @@ static bool spiStarted;
 bool init() {
   if (mounted) { SD.end(); mounted = false; }
   if (!spiStarted) { vspi.begin(PIN_SD_SCK, PIN_SD_MISO, PIN_SD_MOSI, PIN_SD_CS); spiStarted = true; }
-  mounted = SD.begin(PIN_SD_CS, vspi, 20000000);
+  mounted = SD.begin(PIN_SD_CS, vspi, 4000000);
   if (mounted && SD.cardType() == CARD_NONE) { SD.end(); mounted = false; }
   hwLog("SD: %s", mounted ? "takili" : "yok");
   return mounted;
