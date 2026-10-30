@@ -51,7 +51,7 @@ struct World {
 
   // bisiklet
   float x, y, vx, vy, a, w, spin[2];
-  bool contact[2], wasAir;
+  bool contact[2], grounded;
   float airRot, airT, turboT, cpX, time, bonus, camX, camY, msgT, stuckT;
   int turbos, flips, cpIdx;
   char msg[24];
@@ -192,7 +192,7 @@ static void placeBike(float x) {
   w->a = atanf(sl);
   w->vx = w->vy = w->w = 0;
   w->airRot = 0;
-  w->wasAir = false;
+  w->grounded = true;
   w->stuckT = 0;
 }
 
@@ -280,7 +280,7 @@ static void physicsStep(float h, bool throttle, bool brake, float lean, bool con
   w->x += w->vx * h;
   w->y += w->vy * h;
   w->a += w->w * h;
-  if (air) w->airRot += w->w * h;
+  if (!(w->contact[0] && w->contact[1])) w->airRot += w->w * h;
 }
 
 static void checkCrash() {
@@ -356,9 +356,13 @@ static void update(float dt) {
   for (int s = 0; s < SUB; s++) physicsStep(dt / SUB, thr, brk, lean, control);
 
   bool air = !w->contact[0] && !w->contact[1];
+  bool grounded = w->contact[0] && w->contact[1];
   if (air) w->airT += dt;
-  if (ride && !air && w->wasAir) {
-    int n = (int)(fabsf(w->airRot) / (2 * PI_F) + 0.15f);   // tam dönüş sayısı
+  // Takla: iki teker yerden kesildiğinden ikisi yeniden yere basana kadarki dönüş. Başta ve sonda
+  // motor zemine paralel, bu yüzden tam tur sayısı yuvarlanarak bulunur. Arka teker yerdeyken
+  // başlayan ya da arka tekere inilen geri taklalar da böylece sayılır.
+  if (ride && grounded && !w->grounded) {
+    int n = (int)(fabsf(w->airRot) / (2 * PI_F) + 0.5f);   // tam dönüş sayısı
     if (n > 0 && w->airT > 0.4f) {
       w->flips += n;
       w->bonus += n * 1.0f;
@@ -367,8 +371,8 @@ static void update(float dt) {
       w->msgT = 1.3f;
     }
   }
-  if (!air) { w->airRot = 0; w->airT = 0; }
-  w->wasAir = air;
+  if (grounded) { w->airRot = 0; w->airT = 0; }
+  w->grounded = grounded;
 
   if (ride) {
     checkCrash();
