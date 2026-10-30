@@ -122,8 +122,8 @@ sudo usermod -aG dialout $USER
 Build and upload:
 
 ```bash
-git clone https://github.com/FredJones35/esp32doom.git
-cd esp32doom
+git clone https://github.com/FredJones35/ESP32-Night-Console.git
+cd ESP32-Night-Console
 pio run -t upload        # or ./flash-game.sh
 pio device monitor       # FPS and free heap, printed once per second
 ```
@@ -240,7 +240,7 @@ Free heap returns to the same value after leaving every game, no matter how ofte
 ## Project Structure
 
 ```
-esp32doom/
+ESP32-Night-Console/
 ├── platformio.ini            # board, partition table, display and SPI settings
 ├── flash-game.sh             # build + upload shortcut
 ├── src/
