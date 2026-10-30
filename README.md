@@ -213,9 +213,29 @@ Land on both wheels. If your head or the frame hits the ground you crash and res
 | Red and blue are swapped | Enable the `-D TFT_RGB_ORDER=TFT_BGR` line |
 | Image is garbled or snowy | Set `SPI_FREQUENCY` to `20000000` or `10000000` |
 | FIRE fires continuously without being pressed | Button legs are wired wrong; use diagonally opposite legs. Also make sure `TFT_MISO=-1` is still in `platformio.ini`. |
-| Settings shows "SD kart: YOK" | Check the SD wiring (MISO is D21, CS is D5), power the module from VIN (5V), format the card as FAT32. Pick the SD row in Settings to rescan. |
+| Settings shows "SD kart: YOK" | Check the SD wiring (MISO is D21, CS is D5), power the module from VIN (5V), format the card as FAT32 (exFAT cards formatted by a phone are not supported). Pick the SD row in Settings to rescan. |
+| Serial log shows `f_mount failed: (1) A hard error occurred in the low level disk I/O layer` | The card answers but sector reads fail at high SPI clock. Found on the test hardware at 20 MHz; the firmware now mounts at 4 MHz (`src/core/sd.cpp`). If it still fails, shorten the SD jumper wires. |
+| Serial log shows `open(): /sd/doom does not exist` | The card is mounted but the `doom`/`race`/`moto` folders are missing. Copy the contents of `sd/` to the card root. |
 | An SD level is missing from the list | File name longer than 31 characters, wrong extension or folder, or the file is larger than 16 KB. Check the serial log. |
 | Upload fails with `Unable to verify flash chip connection` | Something is connected to D12 or to the CMD/SD0–SD3/CLK pins. Leave those pins free. |
+| Serial monitor shows only garbage after the USB cable was re-plugged or after an upload | The game keeps running; only the log is unreadable. Press EN (reset) on the board, or reopen the port with a reset, and the log is clean again. |
+| Backflips in MOTOKROS never show "TAKLA!" | Fixed in the firmware: rotation is now measured from both wheels leaving the ground until both touch again, so backflips landed on the rear wheel count. Update the firmware. |
+
+## Measured Performance
+
+Measured on the real hardware (ESP32 DevKit V1, no PSRAM, ST7735 at 27 MHz SPI, SD card inserted) from the serial log while playing. Full results are in [TEST_REPORT.md](TEST_REPORT.md).
+
+| Game | Average FPS | Lowest FPS | Free heap in game | Largest block |
+|---|---|---|---|---|
+| DOOM (E1M1–E1M5, incl. boss fight and red damage flash) | 66 | 39 | 245 856 | 110 580 |
+| YARIS (Race) | 75 | 57 | 266 508 | 110 580 |
+| MOTOKROS | 65 | 59 | 273 832 | 110 580 |
+| YILAN (Snake) | 90 | 84 | 279 700 | 110 580 |
+| BLOKLAR | 89 | 84 | 280 692 | 110 580 |
+| FLAPPY | 88 | 83 | 280 748 | 110 580 |
+| Menu | 82–87 | — | 281 256 (308 736 without SD card) | 110 580 |
+
+Free heap returns to the same value after leaving every game, no matter how often a game is entered.
 
 ## Project Structure
 
